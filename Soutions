@@ -1,0 +1,451 @@
+a) String compression
+Implement a method to perform string compression. E.g. ‘aabcccccaaa’ should be a2b1c5a3. 
+
+Sol.
+The given code is : 
+
+#include<iostream>
+#include <string>
+using namespace std;
+ 
+void compress(string s)
+{string str=””;
+    int num = s.length(); //calculating length of the string
+    int i=0; 
+    while ( i < num) {
+ 
+        // Counting the repetitions of each character 
+        int repetition = 1;
+        while (s[i] == s[i+1] && i < num-1 ) {
+            repetition++;
+            i++;
+        }
+        
+        // Print character and its count
+        cout << s[i] << repetition;
+        I++;
+
+        //Addition in code
+Str += s[i]+ to_string(repetition);
+	
+    }
+	bonuscompress(str);
+}
+ 
+int main()
+{
+    string str = "aaaabbcddddd";
+    compress(str);
+}
+
+
+o/p : a4b2c1d4
+
+Space and time complexities both are linear :O(n)
+
+Additionally I have stored the compressed string in var str.
+Under the comment //Addition
+
+
+Bonus 1:
+And called the function bonuscompress for further compression of the string.
+The code is:
+
+string bonuscompress(string s)
+{
+    int n=s.size();
+    string str="";
+
+    int i=0,prev=0;
+    
+    while(i<n)
+    {
+        char ch = s[i];
+        i++;
+
+        int num=0;
+        while(i<n && s[i]<'a')
+        {
+            num = num*10+(s[i]-'0');
+            i++;
+        }
+
+        if(prev!=num && prev)
+        str+= to_string(prev);
+
+        str+=ch;
+
+        prev=num;
+    }
+
+    str+=to_string(prev);
+    return str;
+}
+
+i/p : a2b2c1a3c3
+o/p : ab2c1ac3
+
+Steps:
+Start iterating and calculate frequency of every character.
+If current freq. Is not equal to the prev freq. Append the prev freq. To answer. Append curr character.
+Do this till end of the loop.
+
+We are going through every character once so time and space complexity both are linear
+O(n).
+
+Bonus 2:
+ Decompression.
+
+string decompress(string s)
+{
+    int n=s.size();
+    string str="";
+
+    int i=0,prev=0;
+    
+    while(i<n)
+    {
+        string z="";
+        while(s[i]>='a')
+        {
+            z+=s[i];
+            i++;
+        }
+        
+        int num=0;
+        while(i<n && s[i]<'a')
+        {
+            num = num*10+(s[i]-'0');
+            i++;
+        }
+
+        for(auto ch:z)
+        {
+            for(int j=0;j<num;j++)
+            str+=ch;
+        }
+    }
+    
+    return str;
+}
+
+i/p : ab2c1ac3
+o/p : aabbcaaaccc
+
+Steps:
+While iterating find out the string preceded by the number x.
+Every character of that found string should be appended x times one by one.
+Do this till end of the loop.
+
+
+Space complexity is O(2*n) due to extra string in while loop.
+While TC is O(n)
+
+Test of code - if my initial string matches my final string after calling all 3 functions then all three functions are correct.
+
+
+b) Linked list : find a way to find the kth element from last element of the linked list.(assume length of linked list is unknown)
+Solution :
+In the naive approach firstly we can find the length of LL. then traversing n-k+1 nodes we can point to the kth element from the last. That’s what is written in the link provided but optimally we have to traverse the LL only once. So,
+
+To find the kth to the last element of a linked list without knowing its length, we can use two pointers. Initialize two pointers, move one pointer k nodes ahead, and then move both pointers one node at a time until the first pointer reaches the end. The second pointer will then be at the kth to the last element.
+
+Code: 
+
+int findKthToLast(Node* head, int k) {
+    if (!head || k <= 0) {
+        return -1; // Invalid input
+    }
+
+    Node* pointer1 = head;
+    Node* pointer2 = head;
+
+    // Move pointer1 k nodes ahead
+    for (int i = 0; i < k; ++i) {
+        if (!pointer1) {
+            return -1; // Invalid k
+        }
+        pointer1 = pointer1->next;
+    }
+
+    // Move both pointers until pointer1 reaches the end
+    while (pointer1) {
+        pointer1 = pointer1->next;
+        pointer2 = pointer2->next;
+    }
+
+    return pointer2->data;
+}
+
+
+Bonus 1:
+
+To minimize the number of times through the loop, we can check if pointer1 is not None after the loop and return None if it is, avoiding unnecessary traversal.
+
+# After the while loop
+if pointer1 is not None:
+    return None
+
+c) Stack minimum- Details of stack data structure is available in https://www.geeksforgeeks.org/stack-data-structure/ Stack has functions of push and pop. Can you also add a function 'min' to the stack and it should also execute in O(1).
+
+
+Solution :
+
+To implement a stack with a constant time 'min' function, we can use an additional stack to keep track of the minimum element at each step.
+
+Code will be:
+
+class StackWithMin {
+public:
+    stack<int> stack;
+    stack<int> minStack;
+
+    void push(int value) {
+        stack.push(value);
+        if (minStack.empty() || value <= minStack.top()) {
+            minStack.push(value);
+        }
+    }
+
+    int pop() {
+        if (stack.empty()) {
+            return -1; // Stack is empty
+        }
+        int poppedValue = stack.top();
+        stack.pop();
+        if (poppedValue == minStack.top()) {
+            minStack.pop();
+        }
+        return poppedValue;
+    }
+
+    int getMin() {
+        if (minStack.empty()) {
+            return -1; // Stack is empty
+        }
+        return minStack.top();
+    }
+};
+
+
+Bonus 1-
+
+Explain one real world use case where stack is better used data structure than arrays.
+
+A real-world use case where a stack is a better data structure than arrays is in managing function calls and recursion in programming languages. The call stack keeps track of function calls, allowing for easy return to the previous state after each function completes, making it more efficient than using arrays for this purpose.
+
+
+d) Given an array of integers representing the elevation of a roof structure at various positions, each position is separated by a unit length, Write a program to determine the amount of water that will be trapped on the roof after heavy rainfall
+
+Solution :
+Acc to the solution provided on internet , we first build a array which is prefix maximum and a second array which is suffix maximum. Now after taking diff. Between minimum of these two and height at a certain point we can get the amount of water at the point i.
+
+Code : 
+
+int trapWater(vector<int>& height) {
+    int n = height.size();
+    if (n <= 2) {
+        return 0; // Not enough positions for water trapping
+    }
+
+    std::vector<int> leftMax(n, 0);
+    std::vector<int> rightMax(n, 0);
+
+    leftMax[0] = height[0];
+    for (int i = 1; i < n; ++i) {
+        leftMax[i] = std::max(leftMax[i - 1], height[i]);
+    }
+
+    rightMax[n - 1] = height[n - 1];
+    for (int i = n - 2; i >= 0; --i) {
+        rightMax[i] = std::max(rightMax[i + 1], height[i]);
+    }
+
+    int trappedWater = 0;
+    for (int i = 1; i < n - 1; ++i) {
+        int minHeight = std::min(leftMax[i], rightMax[i]);
+        trappedWater += std::max(0, minHeight - height[i]);
+    }
+
+    return trappedWater;
+}
+
+
+For continuous graphs lets say we take a function f(x) = (x-1)^2 with lower limit of -10 and upper limit of 5.
+
+To calculate the amount of water trapped for the given function 
+f(x)=(x−1) ^2 over the interval x>−10 to x<5 , we can use calculus to find the integral of the difference between the roof structure and the elevation function.
+
+The trapped water can be calculated as the integral of the difference between the roof structure and the elevation function over the specified interval:
+
+Trapped Water =  integrate over -10 to 5 [Roof Structure−f(x)]dx.
+
+In this case, the roof structure is given by the constant value Roof Structure=5, since the roof is flat and located at a height of 5.
+
+Let's write the C++ code to calculate this integral using numerical integration methods. For simplicity, we can use the trapezoidal rule:
+
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+// Define the elevation function f(x) = (x - 1)^2
+double elevationFunction(double x) {
+    pow(x - 1, 2);
+}
+
+// Define the roof structure function
+double roofStructure(double x) {
+    return 5; // Flat roof at height 5
+}
+
+// Numerical integration using the trapezoidal rule
+double integrate(double (*function)(double), double a, double b, int n) {
+    double h = (b - a) / n;
+    double result = 0.5 * (function(a) + function(b));
+
+    for (int i = 1; i < n; ++i) {
+        result += function(a + i * h);
+    }
+
+    return h * result;
+}
+
+int main() {
+    double a = -10;
+    double b = 5;
+    int n = 1000; // Number of intervals for numerical integration
+
+    double trappedWater = integrate([&](double x) {
+        return roofStructure(x) - elevationFunction(x);
+    }, a, b, n);
+
+    cout << "Amount of water trapped: " << trappedWater << " units" << endl;
+
+    return 0;
+}
+
+This code defines the elevation function, the roof structure function, and uses the trapezoidal rule to numerically integrate the difference between the roof structure and the elevation function over the specified interval.
+
+
+
+e) You will be given a list coin denominations that you can use to tender change to your customers, find the most optimum way to tender the exact change to your customers, the optimum is when you use the least number of coins.
+
+Example:
+
+Input: [1, 2, 5, 8, 10] (available coins), 7 (change to be given)
+
+Output: [2, 5]
+
+Scenarios:
+
+Greedy Approach:
+Start with the highest denomination less than or equal to the remaining change.
+Repeat until the remaining change becomes 0.
+
+Dynamic Programming:
+Create a table to store the minimum number of coins required for different amounts.
+Iterate through each amount and update the table based on optimal substructure.
+Optimal substructure: min_coins[i] = min(min_coins[i], min_coins[i - coin] + 1).
+
+Greedy Algorithm:
+A greedy algorithm makes locally optimal choices at each stage with the hope of finding a global optimum. In the context of making change, the greedy approach selects the largest coin that doesn't exceed the remaining change at each step.
+
+Dynamic Programming:
+Dynamic programming breaks a problem down into smaller overlapping subproblems and solves each subproblem only once, storing the solutions to subproblems in a table to avoid redundant computations. In the context of making change, dynamic programming optimally calculates the minimum number of coins needed for various amounts.
+
+Bonus Question: given a number N, remove one digit and print the largest possible number.
+
+Greedy Algorithm:
+The greedy approach involves iteratively removing the leftmost digit that is lesser than its right neighbor. This process ensures that the resulting number is maximized at each step.
+
+Explanation:
+
+Greedily select the leftmost digit that is lesser than its right neighbour and remove it.
+Iterate until the required number of digits are removed.
+Why is it Greedy?
+The algorithm makes a locally optimal choice (removing the leftmost lesser digit) at each step, aiming for a globally optimal solution (maximising the number). Greedy choices at each step contribute to the overall optimality of the solution.
+
+
+f) What is dot product and cross product? Explain use cases of where dot product is used and cross product is used in graphics environment. Add links to places where you studied this information and get back with the understanding.
+
+Dot Product:
+The dot product of two vectors 
+A=[a1,a2,a3] and  B=[b1,b2,b3] is given by 
+
+A⋅B=a1∗b1+a2∗b2+a3∗b3. It results in a scalar value.
+
+Cross Product:
+The cross product of two vectors 
+A=[a1,a2,a3] and  B=[b1,b2,b3] is given by 
+A×B=[a2∗b3−a3∗b2,a3∗b1−a1∗b3,a1∗b2−a2∗b1]. It results in a vector perpendicular to the plane formed by the input vectors.
+
+Use Cases in Graphics:
+
+Dot Product:
+Cosine of Angle: Used to find the cosine of the angle between two vectors. This is useful in lighting calculations, such as determining the intensity of light on a surface.
+Projection: Used in projection calculations, e.g., projecting a vector onto another.
+
+Cross Product:
+Normal Vectors: Used to find the normal vector to a plane defined by two vectors. Essential in shading and rendering for calculating surface normals.
+Rotation: Used in rotation calculations, e.g., rotating a vector around another vector.
+Area of Parallelogram: In 3D graphics, the magnitude of the cross product of two vectors gives the area of the parallelogram they form.
+
+
+
+Bonus-How do you calculate the intersection between a ray and a plane/sphere/triangle?
+
+Ray-Plane Intersection: The intersection point P can be found using 
+P=O+tD, where 
+O is the ray origin, D is the ray direction, and t is the parameter obtained by solving the plane equation.
+
+Ray-Sphere Intersection: Solve the quadratic equation for 
+t in  ∥P−C∥^2 = r^2, where P is the point on the ray, C is the sphere center, and r is the sphere radius.
+
+
+
+g) Explain a piece of code that you wrote which you are proud of? If you have not written any code, please write your favorite subject in engineering studies. We can go deep into that subject.
+
+Answer:
+During my internship period at Samsung I was given a project where I had to write code in python. Basically I was working on a project named eye gaze tracker. Let's say a person is sitting in front of a pc screen and looking at the screen. So what software does is , It continuously tracks the eyes of the user and maps the gaze point on the screen. It was an innovative project as nobody before has done this. Currently apple is using the same kind of technology and it successfully maps the gaze point on the screen but using some additional catch. I.e. It uses infrared technology installed on the front camera of the Iphone. But here we are not using any of these and rely on the fact that we have only basic front camera on windows and using the code written by me.
+
+So by using the mediapipe library I can get the face mesh model of a human face which gets divided into 468 landmarks giving access to 3D points of all the landmarks. So I have to fit a sphere on these points by curve fitting and getting the 3D equation of the sphere (which is an eyeball). By getting the equation of sphere I can determine the position of center of the eyeball.A ray originating from this center passing from Pupil intersecting the pc screen’s plane give us the 3D coordinates of gaze point.
+
+
+h) Random crashes - you are given a source code to test and it randomly crashes and it never crashes in the same place (you have attached a debugger and you find this). Explain what all you would suspect and how would you go about with isolating the cause.
+Bonus - The deeper you go into computer architecture and explain, better.
+
+Read some resources on internet and found the answer.
+ When dealing with random crashes, several factors could be suspected:
+
+Memory Issues: Uninitialized variables, null pointer dereference, or buffer overflows.
+Multithreading Issues: Race conditions or deadlocks.
+Undefined Behavior: Use of dangling pointers, accessing freed memory, etc.
+External Dependencies: Interactions with external libraries or system calls.
+
+Debugging Approach:
+
+Use Tools: Utilize tools like Valgrind, AddressSanitizer, or static analyzers.
+Log and Analyze: Introduce logging to identify patterns and isolate the crashing conditions.
+Reproduce: Attempt to reproduce the crash under controlled conditions.
+Source Code Review: Examine the source code for potential issues, focusing on recent changes.
+Review Compiler Warnings: Address warnings as they might indicate potential issues.
+
+Bonus - Computer Architecture:
+The investigation could delve into hardware-level details:
+
+Cache Issues: Understanding cache behavior, cache misses, and optimizing data locality.
+Instruction Pipeline: Analyzing how instructions are fetched, decoded, and executed in the pipeline.
+Register Usage: Optimizing register allocation and minimizing register spills.
+Memory Hierarchy: Considerations regarding RAM, cache, and virtual memory.
+
+Understanding the underlying architecture helps in optimizing code for better performance and stability
+
+
+I declare that I have done the above work by myself and not worked with anyone or got help from any individual on the internet.
+
+
+
+
+
+
+
